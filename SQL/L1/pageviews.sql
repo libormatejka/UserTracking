@@ -26,7 +26,10 @@ page_time AS (
     EVENT_DATE_UTC > "2022-07-01"
     AND PAGE_LOCATION_CLEAN IS NOT NULL
     AND TRAFFIC_TYPE != "internal"
-    AND NOT REGEXP_CONTAINS(LOWER(USER_AGENT), r'(lighthouse|bitsightbot|facebookexternalhit|bingbot|headlesschrome|hanaleibot|ptst/)')
+    AND NOT REGEXP_CONTAINS(
+      LOWER(USER_AGENT),
+      (SELECT STRING_AGG(PATTERN, '|') FROM `collectorboycz.UserTracking.BOT_USER_AGENTS` WHERE IS_ACTIVE)
+    )
   GROUP BY
     USER_PSEUDO_ID,
     GA_SESSION_ID,
@@ -65,6 +68,9 @@ WHERE
   main.EVENT_DATE_UTC > "2022-07-01"
   AND main.EVENT_NAME = "page_view"
   AND main.TRAFFIC_TYPE != "internal"
-  AND NOT REGEXP_CONTAINS(LOWER(main.USER_AGENT), r'(lighthouse|bitsightbot|facebookexternalhit|bingbot|headlesschrome|hanaleibot|ptst/)')
+  AND NOT REGEXP_CONTAINS(
+    LOWER(main.USER_AGENT),
+    (SELECT STRING_AGG(PATTERN, '|') FROM `collectorboycz.UserTracking.BOT_USER_AGENTS` WHERE IS_ACTIVE)
+  )
 GROUP BY
   ALL

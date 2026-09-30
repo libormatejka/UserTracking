@@ -15,7 +15,10 @@ WITH page_views AS (
     AND EVENT_NAME = 'page_view'
     AND PAGE_LOCATION_CLEAN IS NOT NULL
     AND TRAFFIC_TYPE != "internal"
-    AND NOT REGEXP_CONTAINS(LOWER(USER_AGENT), r'(lighthouse|bitsightbot|facebookexternalhit|bingbot|headlesschrome|hanaleibot|ptst/)')
+    AND NOT REGEXP_CONTAINS(
+      LOWER(USER_AGENT),
+      (SELECT STRING_AGG(PATTERN, '|') FROM `collectorboycz.UserTracking.BOT_USER_AGENTS` WHERE IS_ACTIVE)
+    )
 ),
 
 last_event_per_page AS (
@@ -28,7 +31,10 @@ last_event_per_page AS (
   WHERE EVENT_DATE_UTC BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY) AND CURRENT_DATE()
     AND PAGE_LOCATION_CLEAN IS NOT NULL
     AND TRAFFIC_TYPE != "internal"
-    AND NOT REGEXP_CONTAINS(LOWER(USER_AGENT), r'(lighthouse|bitsightbot|facebookexternalhit|bingbot|headlesschrome|hanaleibot|ptst/)')
+    AND NOT REGEXP_CONTAINS(
+      LOWER(USER_AGENT),
+      (SELECT STRING_AGG(PATTERN, '|') FROM `collectorboycz.UserTracking.BOT_USER_AGENTS` WHERE IS_ACTIVE)
+    )
   GROUP BY
     USER_PSEUDO_ID,
     GA_SESSION_ID,

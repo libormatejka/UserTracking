@@ -22,7 +22,10 @@ session_duration AS (
   WHERE
     EVENT_DATE_UTC > "2022-07-01"
     AND TRAFFIC_TYPE != "internal"
-    AND NOT REGEXP_CONTAINS(LOWER(USER_AGENT), r'(googlebot|google-read-aloud|lighthouse|bingbot|yandexbot|duckduckbot|applebot|bitsightbot|facebookexternalhit|headlesschrome|hanaleibot|ptst/|ahrefsbot|semrushbot|mj12bot|dotbot|petalbot|seznambot|babbar|gptbot|claudebot|ccbot|bytespider|amazonbot|anthropic-ai|cohere-ai|python-requests|scrapy|curl|wget|go-http-client|okhttp|axios|java/|libwww-perl)')
+    AND NOT REGEXP_CONTAINS(
+      LOWER(USER_AGENT),
+      (SELECT STRING_AGG(PATTERN, '|') FROM `collectorboycz.UserTracking.BOT_USER_AGENTS` WHERE IS_ACTIVE)
+    )
   GROUP BY
     UNIQUE_SESSION_ID
 ),
@@ -38,7 +41,10 @@ session_pageviews AS (
     EVENT_NAME = "page_view"
     AND EVENT_DATE_UTC > "2022-07-01"
     AND TRAFFIC_TYPE != "internal"
-    AND NOT REGEXP_CONTAINS(LOWER(USER_AGENT), r'(googlebot|google-read-aloud|lighthouse|bingbot|yandexbot|duckduckbot|applebot|bitsightbot|facebookexternalhit|headlesschrome|hanaleibot|ptst/|ahrefsbot|semrushbot|mj12bot|dotbot|petalbot|seznambot|babbar|gptbot|claudebot|ccbot|bytespider|amazonbot|anthropic-ai|cohere-ai|python-requests|scrapy|curl|wget|go-http-client|okhttp|axios|java/|libwww-perl)')
+    AND NOT REGEXP_CONTAINS(
+      LOWER(USER_AGENT),
+      (SELECT STRING_AGG(PATTERN, '|') FROM `collectorboycz.UserTracking.BOT_USER_AGENTS` WHERE IS_ACTIVE)
+    )
   GROUP BY
     UNIQUE_SESSION_ID
 ),
@@ -63,7 +69,10 @@ session_exit_page AS (
       AND EVENT_DATE_UTC > "2022-07-01"
       AND PAGE_LOCATION_CLEAN IS NOT NULL
       AND TRAFFIC_TYPE != "internal"
-      AND NOT REGEXP_CONTAINS(LOWER(USER_AGENT), r'(googlebot|google-read-aloud|lighthouse|bingbot|yandexbot|duckduckbot|applebot|bitsightbot|facebookexternalhit|headlesschrome|hanaleibot|ptst/|ahrefsbot|semrushbot|mj12bot|dotbot|petalbot|seznambot|babbar|gptbot|claudebot|ccbot|bytespider|amazonbot|anthropic-ai|cohere-ai|python-requests|scrapy|curl|wget|go-http-client|okhttp|axios|java/|libwww-perl)')
+      AND NOT REGEXP_CONTAINS(
+        LOWER(USER_AGENT),
+        (SELECT STRING_AGG(PATTERN, '|') FROM `collectorboycz.UserTracking.BOT_USER_AGENTS` WHERE IS_ACTIVE)
+      )
   )
   WHERE
     rn = 1
@@ -182,5 +191,7 @@ WHERE
   AND main.EVENT_DATE_UTC > "2022-07-01"
   AND main.TRAFFIC_TYPE != "internal"
   AND main.SESSION_SOURCE != "collectorboy.cz"
-  --AND NOT REGEXP_CONTAINS(LOWER(main.USER_AGENT), r'(Google-Read-Aloud|Lighthouse|lighthouse|bitsightbot|facebookexternalhit|bingbot|headlesschrome|hanaleibot|ptst/)')
-  AND NOT REGEXP_CONTAINS(LOWER(main.USER_AGENT), r'(googlebot|google-read-aloud|lighthouse|bingbot|yandexbot|duckduckbot|applebot|bitsightbot|facebookexternalhit|headlesschrome|hanaleibot|ptst/|ahrefsbot|semrushbot|mj12bot|dotbot|petalbot|seznambot|babbar|gptbot|claudebot|ccbot|bytespider|amazonbot|anthropic-ai|cohere-ai|python-requests|scrapy|curl|wget|go-http-client|okhttp|axios|java/|libwww-perl)')
+  AND NOT REGEXP_CONTAINS(
+    LOWER(main.USER_AGENT),
+    (SELECT STRING_AGG(PATTERN, '|') FROM `collectorboycz.UserTracking.BOT_USER_AGENTS` WHERE IS_ACTIVE)
+  )
