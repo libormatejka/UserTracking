@@ -1,3 +1,20 @@
+-- =============================================================================
+-- DOKUMENTACE VÝSTUPNÍCH SLOUPCŮ
+-- =============================================================================
+-- UNIQUE_EVENT_ID - Unikátní ID page_view eventu
+-- EVENT_DATE - Datum zobrazení stránky v časové zóně Europe/Prague, tvar YYYY-mm-dd
+-- PAGE_TITLE - Titulek zobrazené stránky
+-- PAGE_LOCATION_CLEAN - URL zobrazené stránky, očištěná o parametry
+-- DEVICE_CATEGORY - Kategorie zařízení (desktop, mobile, tablet)
+-- CONTENT_GROUP - Skupina obsahu dané stránky
+-- PAGE_VIEWS - Počet page_view eventů agregovaných pro danou kombinaci uživatel/session/stránka
+-- CONSENT - Granted, pokud má daná pageview (uživatel + session + stránka) alespoň 1 event se souhlasem s analytics storage, jinak Denied
+-- TIME_ON_PAGE_SECONDS - Doba strávená na stránce v sekundách (rozdíl mezi prvním a posledním eventem v rámci dané pageview)
+-- BROWSER - Název prohlížeče uživatele
+-- BROWSER_VERSION - Verze prohlížeče uživatele
+-- OS_PLATFORM - Operační systém/platforma uživatele
+-- =============================================================================
+
 -- Consent na úrovni pageview: pageview = USER_PSEUDO_ID + GA_SESSION_ID + PAGE_LOCATION_CLEAN
 -- Pokud má tato pageview alespoň 1 event s CONSENT_ANALYTICS_STORAGE = TRUE, je Granted, jinak Denied
 WITH consent_pageviews AS (

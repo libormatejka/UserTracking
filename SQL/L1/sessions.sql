@@ -1,4 +1,40 @@
-WITH 
+-- =============================================================================
+-- DOKUMENTACE VÝSTUPNÍCH SLOUPCŮ
+-- =============================================================================
+-- UNIQUE_EVENT_ID - Unikátní ID eventu session_start
+-- EVENT_DATE - Datum session v časové zóně Europe/Prague, tvar YYYY-mm-dd
+-- USER_PSEUDO_ID - Pseudonymizované ID uživatele (GA4 client ID)
+-- UNIQUE_SESSION_ID - Unikátní ID návštěvy (session) = USER_PSEUDO_ID + GA_SESSION_ID
+-- DEFAULT_CHANNEL_GROUPING - Kategorie zdroje návštěvy (Paid, Organic, AI & LLMs, Social, E-mail, Referral, Direct, OTHER)
+-- SESSION_CAMPAIGN_ID - ID marketingové kampaně, která přivedla danou session
+-- SESSION_CAMPAIGN_NAME - Název marketingové kampaně, která přivedla danou session
+-- SESSION_SOURCE - Zdroj návštěvy (např. google, facebook, (direct))
+-- SESSION_MEDIUM - Médium návštěvy (např. cpc, organic, referral, (none))
+-- SESSION_CAMPAIGN_CONTENT - Obsah/varianta reklamy (utm_content) přiřazená dané session
+-- SESSION_CREATIVE_FORMAT - Formát kreativy reklamy přiřazený dané session
+-- SESSION_MARKETING_TACTIC - Marketingová taktika přiřazená dané session
+-- SESSION_SOURCE_PLATFORM - Platforma zdroje návštěvy (např. Google Ads, Manual)
+-- CB_CAMPAIGN - Interní (CollectorBoy) název kampaně
+-- CB_MEDIUM - Interní (CollectorBoy) médium
+-- CB_SOURCE - Interní (CollectorBoy) zdroj
+-- PAGE_TITLE - Titulek vstupní stránky (landing page) session
+-- LANDING_PAGE - URL vstupní stránky (landing page), očištěná o parametry
+-- PAGE_CATEGORY - Kategorie vstupní stránky
+-- DEVICE_CATEGORY - Kategorie zařízení (desktop, mobile, tablet)
+-- CONTENT_GROUP - Skupina obsahu vstupní stránky
+-- BROWSER - Název prohlížeče uživatele
+-- BROWSER_VERSION - Verze prohlížeče uživatele
+-- OS_PLATFORM - Operační systém/platforma uživatele
+-- CONSENT - GRANTED, pokud má session alespoň 1 event se souhlasem s analytics storage, jinak DENIED
+-- SESSION_DURATION_SECONDS - Délka session v sekundách (rozdíl mezi prvním a posledním eventem)
+-- ENGAGED_SESSION - TRUE, pokud session trvala 10+ sekund NEBO měla 2+ pageviews (GA4 definice engaged session)
+-- IS_BOUNCE - TRUE, pokud session NENÍ engaged (opak ENGAGED_SESSION)
+-- PAGEVIEWS_PER_SESSION - Počet zobrazených stránek (page_view eventů) v rámci session
+-- NEW_VS_RETURNING - "New" pro první session uživatele (GA_SESSION_NUMBER = 1), jinak "Returning"
+-- EXIT_PAGE - URL poslední navštívené stránky (page_view) v rámci session
+-- =============================================================================
+
+WITH
 
 -- 1. Zjistí, které session mají alespoň 1 event s consent = true
 consent_sessions AS (
